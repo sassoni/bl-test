@@ -1,21 +1,16 @@
 """A simple webapp2 server."""
 
 import webapp2
-import validdate
+import sutil as s
 
 form="""
 <form method="post">
     Birthday:
     <br>
-    <label> Month
-    <input type="text" name="month">
-    </label>
-    <label> Day
-    <input type="text" name="day">
-    </label>
-    <label> Year
-    <input type="text" name="year">
-    </label>
+    <label> Month <input type="text" name="month" value="%(month)s"> </label>
+    <label> Day <input type="text" name="day" value="%(day)s"> </label>
+    <label> Year <input type="text" name="year" value="%(year)s"> </label>
+    <div style="color:red">%(error)s</div>
     <br>
     <br>
     <input type="submit">
@@ -23,17 +18,20 @@ form="""
 """
 
 class MainPage(webapp2.RequestHandler):
+    def print_form(self, error="", month="", day="", year=""):
+        self.response.out.write(form % {"error": error, "month": month, "day": day, "year": year})
+ 
     def get(self):
-        #self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write(form)
+        self.print_form()
+    
     def post(self):
-        birthday_month = validdate.valid_month(self.request.get('month'))
-        birthday_day = validdate.valid_day(self.request.get('day'))
-        birthday_year = validdate.valid_year(self.request.get('year'))
+        birthday_month = self.request.get('month')
+        birthday_day = self.request.get('day')
+        birthday_year = self.request.get('year')
         
-        if (birthday_month and birthday_day and birthday_year):
+        if (s.valid_month(birthday_month) and s.valid_day(birthday_day) and s.valid_year(birthday_year)):
            self.response.out.write("This is a valid date!")
         else:
-            self.response.out.write("Sorry, the date is not valid!")
+           self.print_form("Sorry, the date is not valid!", birthday_month, birthday_day, birthday_year)
             
 application = webapp2.WSGIApplication([('/', MainPage)], debug=True)
