@@ -19,7 +19,7 @@ form="""
 
 class MainPage(webapp2.RequestHandler):
     def print_form(self, error="", month="", day="", year=""):
-        self.response.out.write(form % {"error": error, "month": month, "day": day, "year": year})
+        self.response.out.write(form % {"error": error, "month": s.escape_html(month), "day": s.escape_html(day), "year": s.escape_html(year)})
  
     def get(self):
         self.print_form()

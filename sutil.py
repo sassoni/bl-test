@@ -1,3 +1,5 @@
+import cgi
+
 months = ['January',
           'February',
           'March',
@@ -28,6 +30,9 @@ def valid_day(day):
         day = int(day)
         if day > 0 and day <= 31:
             return day
+            
+def escape_html(s):
+    return cgi.escape(s, quote = True)
 
     
             
